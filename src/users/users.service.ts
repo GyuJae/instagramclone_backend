@@ -12,6 +12,7 @@ import {
   IFindUserByIdInput,
   IFindUserByIdOutput,
 } from './dtos/FindUserById.dto';
+import { ISeeProfileInput, ISeeProfileOutput } from './dtos/seeProfile.dto';
 
 @Injectable()
 export class UsersService {
@@ -134,6 +135,30 @@ export class UsersService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeProfile({ username }: ISeeProfileInput): Promise<ISeeProfileOutput> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          username,
+        },
+        include: {
+          followers: true,
+          followings: true,
+        },
+      });
+      if (!user) throw new Error('Not Found User by this username');
+      return {
+        ok: true,
+        user,
       };
     } catch (error) {
       return {

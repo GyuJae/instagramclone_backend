@@ -6,9 +6,9 @@ ___
 - [X] Edit Profile
 - [X] Login
 - [X] Change Avatar (Image Upload)
-- [ ] See Profile
-- [ ] Follow User
-- [ ] Unfollow User
+- [X] FindUserById
+- [X] See Profile
+- [ ] Toggle Follow User
 - [ ] See Followers w/ Pagination
 - [ ] See Following w/ Pagination
 - [ ] Computed Fields

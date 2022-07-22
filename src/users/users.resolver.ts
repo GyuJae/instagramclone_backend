@@ -12,6 +12,7 @@ import {
   IFindUserByIdInput,
   IFindUserByIdOutput,
 } from './dtos/FindUserById.dto';
+import { ISeeProfileInput, ISeeProfileOutput } from './dtos/seeProfile.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -22,6 +23,13 @@ export class UsersResolver {
     @Args('input') findUserByIdInput: IFindUserByIdInput,
   ): Promise<IFindUserByIdOutput> {
     return this.userService.findUserById(findUserByIdInput);
+  }
+
+  @Query(() => ISeeProfileOutput)
+  async seeProfile(
+    @Args('input') seeProfileInput: ISeeProfileInput,
+  ): Promise<ISeeProfileOutput> {
+    return this.userService.seeProfile(seeProfileInput);
   }
 
   @Mutation(() => CreateAccountOutput, { description: 'Create Account' })
