@@ -8,14 +8,20 @@ import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { EditProfileInput, EditProfileOutput } from './dtos/editProfile.dto';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
+import {
+  IFindUserByIdInput,
+  IFindUserByIdOutput,
+} from './dtos/FindUserById.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
   constructor(private userService: UsersService) {}
 
-  @Query(() => Boolean)
-  hello() {
-    return true;
+  @Query(() => IFindUserByIdOutput)
+  async findUserById(
+    @Args('input') findUserByIdInput: IFindUserByIdInput,
+  ): Promise<IFindUserByIdOutput> {
+    return this.userService.findUserById(findUserByIdInput);
   }
 
   @Mutation(() => CreateAccountOutput, { description: 'Create Account' })

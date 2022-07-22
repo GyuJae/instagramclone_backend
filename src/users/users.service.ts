@@ -8,6 +8,10 @@ import * as bcrypt from 'bcrypt';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { EditProfileInput, EditProfileOutput } from './dtos/editProfile.dto';
+import {
+  IFindUserByIdInput,
+  IFindUserByIdOutput,
+} from './dtos/FindUserById.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +19,28 @@ export class UsersService {
     private prismaService: PrismaService,
     private authService: AuthService,
   ) {}
+
+  async findUserById({
+    userId,
+  }: IFindUserByIdInput): Promise<IFindUserByIdOutput> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      if (!user) throw new Error('User Not Found by this id');
+      return {
+        ok: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
 
   async createAccount({
     email,
