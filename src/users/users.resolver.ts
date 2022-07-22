@@ -13,6 +13,10 @@ import {
   IFindUserByIdOutput,
 } from './dtos/FindUserById.dto';
 import { ISeeProfileInput, ISeeProfileOutput } from './dtos/seeProfile.dto';
+import {
+  IToggleFollowInput,
+  IToggleFollowOutput,
+} from './dtos/toggleFollow.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -51,5 +55,14 @@ export class UsersResolver {
     @CurrentUser() currentUser: UserEntity,
   ): Promise<EditProfileOutput> {
     return this.userService.editProfile(editProfilInput, currentUser.id);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IToggleFollowOutput)
+  async toggleFollow(
+    @Args('input') toggleFollowInput: IToggleFollowInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IToggleFollowOutput> {
+    return this.userService.toggleFollow(toggleFollowInput, loggedInUser);
   }
 }

@@ -13,6 +13,11 @@ import {
   IFindUserByIdOutput,
 } from './dtos/FindUserById.dto';
 import { ISeeProfileInput, ISeeProfileOutput } from './dtos/seeProfile.dto';
+import {
+  IToggleFollowInput,
+  IToggleFollowOutput,
+} from './dtos/toggleFollow.dto';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -159,6 +164,72 @@ export class UsersService {
       return {
         ok: true,
         user,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async toggleFollow(
+    { username }: IToggleFollowInput,
+    loggedInUser: UserEntity,
+  ): Promise<IToggleFollowOutput> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          username,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!user) throw new Error('Not Found User');
+      const isFollowing = await this.prismaService.user.findFirst({
+        where: {
+          id: loggedInUser.id,
+          followings: {
+            some: {
+              id: user.id,
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!!isFollowing) {
+        await this.prismaService.user.update({
+          where: {
+            id: loggedInUser.id,
+          },
+          data: {
+            followings: {
+              disconnect: {
+                id: user.id,
+              },
+            },
+          },
+        });
+      } else {
+        await this.prismaService.user.update({
+          where: {
+            id: loggedInUser.id,
+          },
+          data: {
+            followings: {
+              connect: {
+                id: user.id,
+              },
+            },
+          },
+        });
+      }
+
+      return {
+        ok: true,
       };
     } catch (error) {
       return {
