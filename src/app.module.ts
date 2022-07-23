@@ -24,6 +24,17 @@ import { MessagesModule } from './messages/messages.module';
       sortSchema: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       fieldResolverEnhancers: ['guards'],
+      subscriptions: {
+        'subscriptions-transport-ws': {
+          path: '/graphql',
+          onConnect: (connectionParams) => {
+            if (connectionParams.hasOwnProperty('x-jwt')) {
+              return { token: connectionParams['x-jwt'] };
+            }
+            return {};
+          },
+        },
+      },
     }),
     UsersModule,
     PrismaModule,

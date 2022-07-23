@@ -15,6 +15,23 @@ export class GqlAuthGuard implements CanActivate {
     );
     if (!roles) return true;
 
+    // connection (ws)
+    const gqlContext = GqlExecutionContext.create(context).getContext();
+    if (gqlContext.hasOwnProperty('token')) {
+      const token = gqlContext.token;
+      const user = await this.authService.verify(token);
+      if (user) {
+        gqlContext['user'] = user;
+        if (roles.includes('Any')) {
+          return true;
+        }
+        return roles.includes(user.role);
+      } else {
+        gqlContext['uesr'] = null;
+        return false;
+      }
+    }
+
     // req (http)
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
