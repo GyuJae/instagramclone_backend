@@ -24,6 +24,12 @@ export class MessagesResolver {
   constructor(private readonly messageService: MessagesService) {}
 
   @Roles('USER')
+  @ResolveField(() => UserEntity)
+  async user(@Parent() message: MessageEntity): Promise<UserEntity> {
+    return this.messageService.user(message);
+  }
+
+  @Roles('USER')
   @Mutation(() => ISendMessageOutput)
   async sendMessage(
     @Args('input') sendMessageInput: ISendMessageInput,

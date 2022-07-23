@@ -139,6 +139,16 @@ export class MessagesService {
     }
   }
 
+  async user({ id }: MessageEntity): Promise<UserEntity> {
+    return await this.prismaService.message
+      .findUnique({
+        where: {
+          id,
+        },
+      })
+      .user();
+  }
+
   async users({ id }: MessageRoomEntity): Promise<UserEntity[]> {
     return await this.prismaService.user.findMany({
       where: {
