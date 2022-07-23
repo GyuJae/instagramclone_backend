@@ -1,3 +1,4 @@
+import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
@@ -25,5 +26,14 @@ export class PostsResolver {
     @CurrentUser() currentUser: UserEntity,
   ): Promise<ICreatePostOutput> {
     return this.postService.createPost(createPostInput, currentUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IToggleLikeOutput)
+  async toggleLike(
+    @Args('input') toggleLikeInput: IToggleLikeInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IToggleLikeOutput> {
+    return this.postService.toggleLike(toggleLikeInput, loggedInUser);
   }
 }

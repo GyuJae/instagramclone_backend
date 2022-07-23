@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { File, Hashtag, Post } from '@prisma/client';
+import { File, Hashtag, Like, Post } from '@prisma/client';
 import { CoreEntity } from 'src/core/entities/core.entity';
 
 @ObjectType()
@@ -12,6 +12,15 @@ export class HashtagEntity extends CoreEntity implements Hashtag {
 export class FileEntity extends CoreEntity implements File {
   @Field(() => String)
   posterPath: string;
+
+  @Field(() => Int)
+  postId: number;
+}
+
+@ObjectType()
+export class LikeEntity extends CoreEntity implements Like {
+  @Field(() => Int)
+  userId: number;
 
   @Field(() => Int)
   postId: number;

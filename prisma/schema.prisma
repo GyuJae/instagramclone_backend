@@ -24,6 +24,12 @@ model User {
   followers  User[]   @relation("FollowRelation")
   followings User[]   @relation("FollowRelation")
   posts      Post[]
+  likes      Like[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Post {
@@ -35,6 +41,7 @@ model Post {
   files     File[]
   caption   String?
   hashtags  Hashtag[]
+  likes     Like[]
 }
 
 model File {
@@ -54,7 +61,14 @@ model Hashtag {
   posts     Post[]
 }
 
-enum Role {
-  USER
-  ADMIN
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+
+  @@unique([userId, postId])
 }
