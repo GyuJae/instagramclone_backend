@@ -13,8 +13,9 @@ import {
   ISeeRecommendHashtagsInput,
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
+import { PostEntity } from './entities/post.entity';
 
-@Resolver()
+@Resolver(() => PostEntity)
 export class PostsResolver {
   constructor(private readonly postService: PostsService) {}
 

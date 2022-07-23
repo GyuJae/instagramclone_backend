@@ -10,8 +10,10 @@ import {
   IDeleteCommentInput,
   IDeleteCommentOutput,
 } from './dtos/deleteComment.dto';
+import { IEditCommentInput, IEditCommentOutput } from './dtos/editComment.dto';
+import { CommentEntity } from './entities/comment.entity';
 
-@Resolver()
+@Resolver(() => CommentEntity)
 export class CommentsResolver {
   constructor(private readonly commentService: CommentsService) {}
 
@@ -31,5 +33,14 @@ export class CommentsResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<IDeleteCommentOutput> {
     return this.commentService.deleteComment(deleteCommentInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IEditCommentOutput)
+  async editComment(
+    @Args('input') editCommentInput: IEditCommentInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IEditCommentOutput> {
+    return this.commentService.editComment(editCommentInput, loggedInUser);
   }
 }

@@ -30,6 +30,6 @@ ___
 ### Comment
 ___
 - [X] Create Comment
-- [ ] Delete Comment
-- [ ] Edit Comment
+- [X] Delete Comment
+- [X] Edit Comment
 - [ ] See Post Comments

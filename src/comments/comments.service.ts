@@ -9,6 +9,7 @@ import {
   IDeleteCommentInput,
   IDeleteCommentOutput,
 } from './dtos/deleteComment.dto';
+import { IEditCommentInput, IEditCommentOutput } from './dtos/editComment.dto';
 
 @Injectable()
 export class CommentsService {
@@ -72,6 +73,44 @@ export class CommentsService {
         },
       });
 
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async editComment(
+    { id: commentId, payload }: IEditCommentInput,
+    loggedInUser: UserEntity,
+  ): Promise<IEditCommentOutput> {
+    try {
+      const comment = await this.prismaService.comment.findUnique({
+        where: {
+          id: commentId,
+        },
+        select: {
+          id: true,
+          userId: true,
+        },
+      });
+      if (!comment) throw new Error('Not Found Comment');
+
+      if (loggedInUser.id !== comment.userId)
+        throw new Error('No Authorization');
+
+      await this.prismaService.comment.update({
+        where: {
+          id: comment.id,
+        },
+        data: {
+          payload,
+        },
+      });
       return {
         ok: true,
       };
