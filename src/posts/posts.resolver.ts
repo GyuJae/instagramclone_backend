@@ -1,3 +1,4 @@
+import { CommentEntity } from './../comments/entities/comment.entity';
 import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
@@ -41,6 +42,16 @@ export class PostsResolver {
   @ResolveField(() => Int)
   async likeCount(@Parent() post: PostEntity): Promise<number> {
     return this.postService.likeCount(post);
+  }
+
+  @ResolveField(() => Int)
+  async commentCount(@Parent() post: PostEntity): Promise<number> {
+    return this.postService.commentCount(post);
+  }
+
+  @ResolveField(() => [CommentEntity])
+  async comments(@Parent() post: PostEntity): Promise<CommentEntity[]> {
+    return this.postService.comments(post);
   }
 
   @Roles('USER')

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { processHashtags } from 'src/utils';
@@ -333,6 +334,22 @@ export class PostsService {
 
   async likeCount(post: PostEntity): Promise<number> {
     return await this.prismaService.like.count({
+      where: {
+        postId: post.id,
+      },
+    });
+  }
+
+  async commentCount(post: PostEntity): Promise<number> {
+    return await this.prismaService.comment.count({
+      where: {
+        postId: post.id,
+      },
+    });
+  }
+
+  async comments(post: PostEntity): Promise<CommentEntity[]> {
+    return await this.prismaService.comment.findMany({
       where: {
         postId: post.id,
       },
