@@ -22,6 +22,10 @@ import {
   ISeeFollowingInput,
   ISeeFollowingOutput,
 } from './dtos/seeFollowing.dto';
+import {
+  ISeeFollowersInput,
+  ISeeFollowersOutput,
+} from './dtos/seeFollowers.dto';
 
 @Injectable()
 export class UsersService {
@@ -273,6 +277,45 @@ export class UsersService {
       return {
         ok: true,
         users: users.followings,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeFollowers({
+    username,
+    lastId,
+  }: ISeeFollowersInput): Promise<ISeeFollowersOutput> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          username,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!user) throw new Error('Not Found User');
+
+      const users = await this.prismaService.user.findUnique({
+        where: {
+          username,
+        },
+        include: {
+          followers: {
+            take: 20,
+            skip: lastId ? 1 : 0,
+            ...(lastId && { cursor: { id: lastId } }),
+          },
+        },
+      });
+      return {
+        ok: true,
+        users: users.followers,
       };
     } catch (error) {
       return {
