@@ -12,4 +12,4 @@ ___
 - [X] See Followers w/ Pagination
 - [X] See Following w/ Pagination
 - [X] Search Users
-- [ ] Computed Fields
+- [X] Computed Fields

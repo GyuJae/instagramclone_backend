@@ -386,4 +386,25 @@ export class UsersService {
   isMe(currentUser: UserEntity, loggedInUser: UserEntity): boolean {
     return currentUser.id === loggedInUser.id;
   }
+
+  async isFollowing(
+    currentUser: UserEntity,
+    loggedInUser: UserEntity,
+  ): Promise<boolean> {
+    try {
+      const isFollowing = await this.prismaService.user.findFirst({
+        where: {
+          id: loggedInUser.id,
+          followings: {
+            some: {
+              id: currentUser.id,
+            },
+          },
+        },
+      });
+      return !!isFollowing;
+    } catch {
+      return false;
+    }
+  }
 }

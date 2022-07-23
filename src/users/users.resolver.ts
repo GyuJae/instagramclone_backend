@@ -58,6 +58,16 @@ export class UsersResolver {
     return this.userService.isMe(currentUser, loggedInUser);
   }
 
+  @Roles('USER')
+  @ResolveField('isFollowing', () => Boolean)
+  async isFollowing(
+    @Parent() currentUser: UserEntity,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<boolean> {
+    return this.userService.isFollowing(currentUser, loggedInUser);
+  }
+
+  @Roles('USER')
   @Query(() => IFindUserByIdOutput)
   async findUserById(
     @Args('input') findUserByIdInput: IFindUserByIdInput,
@@ -65,6 +75,7 @@ export class UsersResolver {
     return this.userService.findUserById(findUserByIdInput);
   }
 
+  @Roles('USER')
   @Query(() => ISeeProfileOutput)
   async seeProfile(
     @Args('input') seeProfileInput: ISeeProfileInput,
@@ -72,6 +83,7 @@ export class UsersResolver {
     return this.userService.seeProfile(seeProfileInput);
   }
 
+  @Roles('USER')
   @Query(() => ISeeFollowingOutput)
   async seeFollowing(
     @Args('input') seeFollowingInput: ISeeFollowingInput,
@@ -79,6 +91,7 @@ export class UsersResolver {
     return this.userService.seeFollowing(seeFollowingInput);
   }
 
+  @Roles('USER')
   @Query(() => ISeeFollowersOutput)
   async seeFollowers(
     @Args('input') seeFollowersInput: ISeeFollowersInput,
@@ -86,6 +99,7 @@ export class UsersResolver {
     return this.userService.seeFollowers(seeFollowersInput);
   }
 
+  @Roles('USER')
   @Query(() => ISearchUsersOutput)
   async searchUsers(
     @Args('input') searchUsersInput: ISearchUsersInput,
