@@ -17,6 +17,10 @@ import {
   IToggleFollowInput,
   IToggleFollowOutput,
 } from './dtos/toggleFollow.dto';
+import {
+  ISeeFollowingInput,
+  ISeeFollowingOutput,
+} from './dtos/seeFollowing.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -34,6 +38,13 @@ export class UsersResolver {
     @Args('input') seeProfileInput: ISeeProfileInput,
   ): Promise<ISeeProfileOutput> {
     return this.userService.seeProfile(seeProfileInput);
+  }
+
+  @Query(() => ISeeFollowingOutput)
+  async seeFollowing(
+    @Args('input') seeFollowingInput: ISeeFollowingInput,
+  ): Promise<ISeeFollowingOutput> {
+    return this.userService.seeFollowing(seeFollowingInput);
   }
 
   @Mutation(() => CreateAccountOutput, { description: 'Create Account' })

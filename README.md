@@ -8,7 +8,7 @@ ___
 - [X] Change Avatar (Image Upload)
 - [X] FindUserById
 - [X] See Profile
-- [ ] Toggle Follow User
+- [X] Toggle Follow User
 - [ ] See Followers w/ Pagination
 - [ ] See Following w/ Pagination
 - [ ] Computed Fields
