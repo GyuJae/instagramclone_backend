@@ -8,6 +8,7 @@ import {
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
+import { MessageEntity, MessageRoomEntity } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
@@ -136,5 +137,25 @@ export class MessagesService {
         error: error.message,
       };
     }
+  }
+
+  async users({ id }: MessageRoomEntity): Promise<UserEntity[]> {
+    return await this.prismaService.user.findMany({
+      where: {
+        messageRooms: {
+          some: {
+            id,
+          },
+        },
+      },
+    });
+  }
+
+  async messages({ id: roomId }: MessageRoomEntity): Promise<MessageEntity[]> {
+    return await this.prismaService.message.findMany({
+      where: {
+        roomId,
+      },
+    });
   }
 }

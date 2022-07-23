@@ -1,4 +1,11 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
@@ -28,6 +35,18 @@ export class MessagesResolver {
 @Resolver(() => MessageRoomEntity)
 export class MessageRoomResolver {
   constructor(private readonly messageService: MessagesService) {}
+
+  @Roles('USER')
+  @ResolveField(() => [UserEntity])
+  async users(@Parent() room: MessageRoomEntity): Promise<UserEntity[]> {
+    return this.messageService.users(room);
+  }
+
+  @Roles('USER')
+  @ResolveField(() => [MessageEntity])
+  async messages(@Parent() room: MessageRoomEntity): Promise<MessageEntity[]> {
+    return this.messageService.messages(room);
+  }
 
   @Roles('USER')
   @Query(() => ISeeRoomOutput)
