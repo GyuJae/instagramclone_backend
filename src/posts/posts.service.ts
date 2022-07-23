@@ -355,4 +355,19 @@ export class PostsService {
       },
     });
   }
+
+  async isLiked(post: PostEntity, loggedInUser: UserEntity): Promise<boolean> {
+    const like = await this.prismaService.like.findUnique({
+      where: {
+        userId_postId: {
+          userId: loggedInUser.id,
+          postId: post.id,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    return !!like;
+  }
 }

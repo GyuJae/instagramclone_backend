@@ -55,6 +55,24 @@ export class PostsResolver {
   }
 
   @Roles('USER')
+  @ResolveField(() => Boolean)
+  isMine(
+    @Parent() post: PostEntity,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): boolean {
+    return post.userId === loggedInUser.id;
+  }
+
+  @Roles('USER')
+  @ResolveField(() => Boolean)
+  async isLiked(
+    @Parent() post: PostEntity,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<boolean> {
+    return this.postService.isLiked(post, loggedInUser);
+  }
+
+  @Roles('USER')
   @Query(() => ISeeHashtagOutput)
   async seeHashtag(
     @Args('input') seeHashtagInput: ISeeHashtagInput,
