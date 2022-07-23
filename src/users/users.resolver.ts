@@ -34,6 +34,7 @@ import {
   ISeeFollowersOutput,
 } from './dtos/seeFollowers.dto';
 import { ISearchUsersInput, ISearchUsersOutput } from './dtos/searchUsers.dto';
+import { IMeOutput } from './dtos/me.dto';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -105,6 +106,12 @@ export class UsersResolver {
     @Args('input') searchUsersInput: ISearchUsersInput,
   ): Promise<ISearchUsersOutput> {
     return this.userService.searchUsers(searchUsersInput);
+  }
+
+  @Roles('USER')
+  @Query(() => IMeOutput)
+  async me(@CurrentUser() loggedInUser: UserEntity): Promise<IMeOutput> {
+    return this.userService.me(loggedInUser);
   }
 
   @Mutation(() => CreateAccountOutput, { description: 'Create Account' })

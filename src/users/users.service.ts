@@ -27,6 +27,7 @@ import {
   ISeeFollowersOutput,
 } from './dtos/seeFollowers.dto';
 import { ISearchUsersInput, ISearchUsersOutput } from './dtos/searchUsers.dto';
+import { IMeOutput } from './dtos/me.dto';
 
 @Injectable()
 export class UsersService {
@@ -405,6 +406,25 @@ export class UsersService {
       return !!isFollowing;
     } catch {
       return false;
+    }
+  }
+
+  async me(loggedInUser: UserEntity): Promise<IMeOutput> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: loggedInUser.id,
+        },
+      });
+      return {
+        ok: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
     }
   }
 }
