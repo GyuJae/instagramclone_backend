@@ -365,4 +365,21 @@ export class UsersService {
       return 0;
     }
   }
+
+  async totalFollower({ id }: UserEntity): Promise<number> {
+    try {
+      const totalFollower = await this.prismaService.user.count({
+        where: {
+          followings: {
+            some: {
+              id,
+            },
+          },
+        },
+      });
+      return totalFollower;
+    } catch {
+      return 0;
+    }
+  }
 }

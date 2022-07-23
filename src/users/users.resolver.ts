@@ -44,6 +44,11 @@ export class UsersResolver {
     return this.userService.totalFollowing(user);
   }
 
+  @ResolveField('totalFollower', () => Int)
+  async totalFollower(@Parent() user: UserEntity): Promise<number> {
+    return this.userService.totalFollower(user);
+  }
+
   @Query(() => IFindUserByIdOutput)
   async findUserById(
     @Args('input') findUserByIdInput: IFindUserByIdInput,
