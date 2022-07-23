@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PostsModule } from './posts/posts.module';
       isGlobal: true,
     }),
     PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [],

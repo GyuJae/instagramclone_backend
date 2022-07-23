@@ -23,8 +23,13 @@ ___
 - [X] Edit Post
 - [X] Delete Post
 - [X] Search Posts
-- [ ] Read Recommend Hashtags
-- [ ] See Post Comments
+- [X] Read Recommend Hashtags
 - [ ] Computed Fields
-- [ ] See HashTag
+<!-- - [ ] See HashTag -->
 
+### Comment
+___
+- [ ] See Post Comments
+- [ ] Create Comment
+- [ ] Delete Comment
+- [ ] Edit Comment

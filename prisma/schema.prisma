@@ -13,18 +13,19 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  email      String   @unique
-  username   String   @unique
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  email      String    @unique
+  username   String    @unique
   password   String
   avatar     String?
-  role       Role     @default(USER)
-  followers  User[]   @relation("FollowRelation")
-  followings User[]   @relation("FollowRelation")
+  role       Role      @default(USER)
+  followers  User[]    @relation("FollowRelation")
+  followings User[]    @relation("FollowRelation")
   posts      Post[]
   likes      Like[]
+  comments   Comment[]
 }
 
 enum Role {
@@ -42,6 +43,7 @@ model Post {
   caption   String?
   hashtags  Hashtag[]
   likes     Like[]
+  comments  Comment[]
 }
 
 model File {
@@ -71,4 +73,15 @@ model Like {
   postId    Int
 
   @@unique([userId, postId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int
+  payload   String
 }
