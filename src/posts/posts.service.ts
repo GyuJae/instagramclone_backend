@@ -7,6 +7,7 @@ import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
 import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISearchPostsInput, ISearchPostsOutput } from './dtos/searchPosts.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
+import { ISeeHashtagInput, ISeeHashtagOutput } from './dtos/seeHashtag.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import {
   ISeeRecommendHashtagsInput,
@@ -287,6 +288,26 @@ export class PostsService {
     }
   }
 
+  async seeHashtag({ hashtag }: ISeeHashtagInput): Promise<ISeeHashtagOutput> {
+    try {
+      const hashtagResult = await this.prismaService.hashtag.findUnique({
+        where: {
+          hashtag,
+        },
+      });
+      if (!hashtagResult) throw new Error('Not Found Hashtag');
+      return {
+        ok: true,
+        hashtag: hashtagResult,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
   async user(post: PostEntity): Promise<UserEntity> {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -296,7 +317,7 @@ export class PostsService {
     return user;
   }
 
-  async hashtags(post: PostEntity): Promise<HashtagEntity[]> {
+  async hashtags(post: PostEntity): Promise<HashtagEntity[] | null> {
     const hashtags = await this.prismaService.hashtag.findMany({
       where: {
         posts: {
