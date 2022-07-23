@@ -19,9 +19,9 @@ ___
 - [X] Create Post
 - [X] See Feed
 - [X] Toggle Like
+- [X] See Post
 - [ ] Edit Post
 - [ ] Delete Post
-- [ ] See Detail Post
 - [ ] Search Post
 - [ ] See Post Comments
 - [ ] Computed Fields

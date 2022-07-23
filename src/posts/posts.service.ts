@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { processHashtags } from 'src/utils';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
+import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
@@ -147,6 +148,50 @@ export class PostsService {
       return {
         ok: true,
         post,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async editPost(
+    { postId, caption }: IEditPostInput,
+    loggedInUser: UserEntity,
+  ): Promise<IEditPostOutput> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: postId,
+        },
+        include: {
+          hashtags: {
+            select: {
+              hashtag: true,
+            },
+          },
+        },
+      });
+      if (!post) throw new Error('Not Found Post');
+      if (post.userId !== loggedInUser.id) throw new Error('No Authorization');
+
+      await this.prismaService.post.update({
+        where: {
+          id: post.id,
+        },
+        data: {
+          caption,
+          hashtags: {
+            disconnect: post.hashtags,
+            connectOrCreate: processHashtags(caption),
+          },
+        },
+      });
+
+      return {
+        ok: true,
       };
     } catch (error) {
       return {
