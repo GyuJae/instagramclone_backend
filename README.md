@@ -29,7 +29,7 @@ ___
 
 ### Comment
 ___
-- [ ] See Post Comments
-- [ ] Create Comment
+- [X] Create Comment
 - [ ] Delete Comment
 - [ ] Edit Comment
+- [ ] See Post Comments
