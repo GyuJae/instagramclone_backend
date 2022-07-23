@@ -6,6 +6,10 @@ import {
 } from './dtos/createComment.dto';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
+import {
+  IDeleteCommentInput,
+  IDeleteCommentOutput,
+} from './dtos/deleteComment.dto';
 
 @Resolver()
 export class CommentsResolver {
@@ -18,5 +22,14 @@ export class CommentsResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<ICreateCommentOutput> {
     return this.commentService.createComment(createCommentInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IDeleteCommentOutput)
+  async deleteComment(
+    @Args('input') deleteCommentInput: IDeleteCommentInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IDeleteCommentOutput> {
+    return this.commentService.deleteComment(deleteCommentInput, loggedInUser);
   }
 }
