@@ -13,6 +13,7 @@ import {
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
+import { PostEntity } from './entities/post.entity';
 
 @Injectable()
 export class PostsService {
@@ -283,6 +284,19 @@ export class PostsService {
         ok: false,
         error: error.message,
       };
+    }
+  }
+
+  async user(post: PostEntity): Promise<UserEntity | null> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: post.userId,
+        },
+      });
+      return user;
+    } catch {
+      return null;
     }
   }
 }

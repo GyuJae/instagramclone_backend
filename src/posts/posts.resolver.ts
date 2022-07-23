@@ -1,7 +1,14 @@
 import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
@@ -18,6 +25,11 @@ import { PostEntity } from './entities/post.entity';
 @Resolver(() => PostEntity)
 export class PostsResolver {
   constructor(private readonly postService: PostsService) {}
+
+  @ResolveField(() => UserEntity)
+  async user(@Parent() post: PostEntity): Promise<UserEntity> {
+    return this.postService.user(post);
+  }
 
   @Roles('USER')
   @Query(() => ISeePostOutput)
