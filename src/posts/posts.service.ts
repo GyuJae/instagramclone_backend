@@ -5,6 +5,7 @@ import { processHashtags } from 'src/utils';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
 import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
 import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
+import { ISearchPostsInput, ISearchPostsOutput } from './dtos/searchPosts.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
@@ -226,6 +227,29 @@ export class PostsService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async searchPosts({
+    keyword,
+  }: ISearchPostsInput): Promise<ISearchPostsOutput> {
+    try {
+      const posts = await this.prismaService.post.findMany({
+        where: {
+          caption: {
+            contains: keyword,
+          },
+        },
+      });
+      return {
+        ok: true,
+        posts,
       };
     } catch (error) {
       return {

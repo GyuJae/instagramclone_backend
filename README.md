@@ -22,7 +22,8 @@ ___
 - [X] See Post
 - [X] Edit Post
 - [X] Delete Post
-- [ ] Search Post
+- [X] Search Posts
+- [ ] Read Recommend Hashtags
 - [ ] See Post Comments
 - [ ] Computed Fields
 - [ ] See HashTag

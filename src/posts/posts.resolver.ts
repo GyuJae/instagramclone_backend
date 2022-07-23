@@ -8,6 +8,7 @@ import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
 import { ISeeFeedOutput, ISeeFeedInput } from './dtos/seeFeed.dto';
 import { PostsService } from './posts.service';
 import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
+import { ISearchPostsInput, ISearchPostsOutput } from './dtos/searchPosts.dto';
 
 @Resolver()
 export class PostsResolver {
@@ -28,6 +29,14 @@ export class PostsResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<ISeeFeedOutput> {
     return this.postService.seeFeed(seeFeedInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Query(() => ISearchPostsOutput)
+  async searchPosts(
+    @Args('input') searchPostsInput: ISearchPostsInput,
+  ): Promise<ISearchPostsOutput> {
+    return this.postService.searchPosts(searchPostsInput);
   }
 
   @Roles('USER')
