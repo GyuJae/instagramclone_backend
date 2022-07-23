@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/core/dtos/coreOutput.dto';
 import { PostEntity } from '../entities/post.entity';
 
@@ -6,6 +6,9 @@ import { PostEntity } from '../entities/post.entity';
 export class ISearchPostsInput {
   @Field(() => String)
   keyword: string;
+
+  @Field(() => Int, { nullable: true })
+  lastId?: number;
 }
 
 @ObjectType()

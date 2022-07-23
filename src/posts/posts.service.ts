@@ -11,6 +11,10 @@ import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeeHashtagInput, ISeeHashtagOutput } from './dtos/seeHashtag.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import {
+  ISeePostsByHashtagInput,
+  ISeePostsByHashtagOutput,
+} from './dtos/seePostsByHashtag.dto';
+import {
   ISeeRecommendHashtagsInput,
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
@@ -245,6 +249,7 @@ export class PostsService {
 
   async searchPosts({
     keyword,
+    lastId,
   }: ISearchPostsInput): Promise<ISearchPostsOutput> {
     try {
       const posts = await this.prismaService.post.findMany({
@@ -253,6 +258,9 @@ export class PostsService {
             contains: keyword,
           },
         },
+        take: 20,
+        skip: lastId ? 1 : 0,
+        ...(lastId && { cursor: { id: lastId } }),
       });
       return {
         ok: true,
@@ -300,6 +308,35 @@ export class PostsService {
       return {
         ok: true,
         hashtag: hashtagResult,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seePostsByHashtag({
+    lastId,
+    hashtag,
+  }: ISeePostsByHashtagInput): Promise<ISeePostsByHashtagOutput> {
+    try {
+      const posts = await this.prismaService.post.findMany({
+        where: {
+          hashtags: {
+            some: {
+              hashtag: `#${hashtag}`,
+            },
+          },
+        },
+        take: 20,
+        skip: lastId ? 1 : 0,
+        ...(lastId && { cursor: { id: lastId } }),
+      });
+      return {
+        ok: true,
+        posts,
       };
     } catch (error) {
       return {

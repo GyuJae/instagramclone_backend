@@ -24,6 +24,10 @@ import {
 } from './dtos/seeRecommendHashtags.dto';
 import { HashtagEntity, PostEntity } from './entities/post.entity';
 import { ISeeHashtagInput, ISeeHashtagOutput } from './dtos/seeHashtag.dto';
+import {
+  ISeePostsByHashtagInput,
+  ISeePostsByHashtagOutput,
+} from './dtos/seePostsByHashtag.dto';
 
 @Resolver(() => PostEntity)
 export class PostsResolver {
@@ -97,6 +101,13 @@ export class PostsResolver {
     return this.postService.searchPosts(searchPostsInput);
   }
 
+  @Roles('USER')
+  @Query(() => ISeePostsByHashtagOutput)
+  async seePostsByHash(
+    @Args('input') seePostsByHashtagInput: ISeePostsByHashtagInput,
+  ): Promise<ISeePostsByHashtagOutput> {
+    return this.postService.seePostsByHashtag(seePostsByHashtagInput);
+  }
   @Roles('USER')
   @Mutation(() => ICreatePostOutput)
   async createPost(
