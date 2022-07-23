@@ -5,6 +5,7 @@ import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { IReadMessageInput, IReadMessageOutput } from './dtos/readMessage.dto';
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
@@ -130,6 +131,50 @@ export class MessagesService {
       return {
         ok: true,
         rooms,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async readMessage(
+    { messageId }: IReadMessageInput,
+    loggedInUser: UserEntity,
+  ): Promise<IReadMessageOutput> {
+    try {
+      const message = await this.prismaService.message.findFirst({
+        where: {
+          id: messageId,
+          userId: {
+            not: loggedInUser.id,
+          },
+          room: {
+            users: {
+              some: {
+                id: loggedInUser.id,
+              },
+            },
+          },
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!message) throw new Error('Not Found Message');
+
+      await this.prismaService.message.update({
+        where: {
+          id: message.id,
+        },
+        data: {
+          read: true,
+        },
+      });
+      return {
+        ok: true,
       };
     } catch (error) {
       return {

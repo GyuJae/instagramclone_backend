@@ -13,6 +13,7 @@ import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { IReadMessageInput, IReadMessageOutput } from './dtos/readMessage.dto';
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
@@ -36,6 +37,15 @@ export class MessagesResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<ISendMessageOutput> {
     return this.messageService.sendMessage(sendMessageInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IReadMessageOutput)
+  async readMessage(
+    @Args('input') readMessageInput: IReadMessageInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IReadMessageOutput> {
+    return this.messageService.readMessage(readMessageInput, loggedInUser);
   }
 }
 
