@@ -11,5 +11,5 @@ ___
 - [X] Toggle Follow User
 - [X] See Followers w/ Pagination
 - [X] See Following w/ Pagination
-- [] Search Users
+- [X] Search Users
 - [ ] Computed Fields

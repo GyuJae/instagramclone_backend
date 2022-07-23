@@ -164,10 +164,6 @@ export class UsersService {
         where: {
           username,
         },
-        include: {
-          followers: true,
-          followings: true,
-        },
       });
       if (!user) throw new Error('Not Found User by this username');
       return {
@@ -350,6 +346,23 @@ export class UsersService {
         ok: false,
         error: error.message,
       };
+    }
+  }
+
+  async totalFollowing({ id }: UserEntity): Promise<number> {
+    try {
+      const totalFollowing = await this.prismaService.user.count({
+        where: {
+          followers: {
+            some: {
+              id,
+            },
+          },
+        },
+      });
+      return totalFollowing;
+    } catch {
+      return 0;
     }
   }
 }

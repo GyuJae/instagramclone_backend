@@ -9,16 +9,7 @@ export class ISeeProfileInput {
 }
 
 @ObjectType()
-class IUserWithFollow extends UserEntity {
-  @Field(() => [UserEntity])
-  followers: UserEntity[];
-
-  @Field(() => [UserEntity])
-  followings: UserEntity[];
-}
-
-@ObjectType()
 export class ISeeProfileOutput extends CoreOutput {
-  @Field(() => IUserWithFollow, { nullable: true })
-  user?: IUserWithFollow;
+  @Field(() => UserEntity, { nullable: true })
+  user?: UserEntity;
 }

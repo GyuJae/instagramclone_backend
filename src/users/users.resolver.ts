@@ -1,5 +1,13 @@
 import { LoginInput, LoginOutput } from './dtos/login.dto';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import {
   CraeteAccountInput,
   CreateAccountOutput,
@@ -30,6 +38,11 @@ import { ISearchUsersInput, ISearchUsersOutput } from './dtos/searchUsers.dto';
 @Resolver(() => UserEntity)
 export class UsersResolver {
   constructor(private userService: UsersService) {}
+
+  @ResolveField('totalFollowing', () => Int)
+  async totalFollowing(@Parent() user: UserEntity): Promise<number> {
+    return this.userService.totalFollowing(user);
+  }
 
   @Query(() => IFindUserByIdOutput)
   async findUserById(
