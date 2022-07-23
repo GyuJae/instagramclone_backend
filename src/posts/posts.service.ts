@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { processHashtags } from 'src/utils';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
+import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 
 @Injectable()
 export class PostsService {
@@ -35,6 +36,44 @@ export class PostsService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeFeed(
+    { lastId }: ISeeFeedInput,
+    loggedInUser: UserEntity,
+  ): Promise<ISeeFeedOutput> {
+    try {
+      const posts = await this.prismaService.post.findMany({
+        take: 20,
+        skip: lastId ? 1 : 0,
+        ...(lastId && { cursor: { id: lastId } }),
+        where: {
+          OR: [
+            {
+              user: {
+                followers: {
+                  some: {
+                    id: loggedInUser.id,
+                  },
+                },
+              },
+            },
+            {
+              userId: loggedInUser.id,
+            },
+          ],
+        },
+      });
+      return {
+        ok: true,
+        posts,
       };
     } catch (error) {
       return {

@@ -1,12 +1,22 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
+import { ISeeFeedOutput, ISeeFeedInput } from './dtos/seeFeed.dto';
 import { PostsService } from './posts.service';
 
 @Resolver()
 export class PostsResolver {
   constructor(private readonly postService: PostsService) {}
+
+  @Roles('USER')
+  @Query(() => ISeeFeedOutput)
+  async seeFeed(
+    @Args('input') seeFeedInput: ISeeFeedInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<ISeeFeedOutput> {
+    return this.postService.seeFeed(seeFeedInput, loggedInUser);
+  }
 
   @Roles('USER')
   @Mutation(() => ICreatePostOutput)
