@@ -9,7 +9,7 @@ ___
 - [X] FindUserById
 - [X] See Profile
 - [X] Toggle Follow User
-- [ ] See Followers w/ Pagination
-- [ ] See Following w/ Pagination
+- [X] See Followers w/ Pagination
+- [X] See Following w/ Pagination
+- [] Search Users
 - [ ] Computed Fields
-- [ ] Search Users

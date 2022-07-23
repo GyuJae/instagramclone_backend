@@ -26,6 +26,7 @@ import {
   ISeeFollowersInput,
   ISeeFollowersOutput,
 } from './dtos/seeFollowers.dto';
+import { ISearchUsersInput, ISearchUsersOutput } from './dtos/searchUsers.dto';
 
 @Injectable()
 export class UsersService {
@@ -316,6 +317,33 @@ export class UsersService {
       return {
         ok: true,
         users: users.followers,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async searchUsers({
+    keyword,
+    lastId,
+  }: ISearchUsersInput): Promise<ISearchUsersOutput> {
+    try {
+      const users = await this.prismaService.user.findMany({
+        where: {
+          username: {
+            contains: keyword,
+          },
+        },
+        take: 20,
+        skip: lastId ? 1 : 0,
+        ...(lastId && { cursor: { id: lastId } }),
+      });
+      return {
+        ok: true,
+        users,
       };
     } catch (error) {
       return {
