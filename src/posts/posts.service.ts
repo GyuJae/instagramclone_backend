@@ -273,7 +273,7 @@ export class PostsService {
       const hashtags = await this.prismaService.hashtag.findMany({
         where: {
           hashtag: {
-            startsWith: keyword,
+            startsWith: `#${keyword}`,
           },
         },
       });
@@ -369,5 +369,17 @@ export class PostsService {
       },
     });
     return !!like;
+  }
+
+  async totalPost(hashtag: HashtagEntity): Promise<number> {
+    return await this.prismaService.post.count({
+      where: {
+        hashtags: {
+          some: {
+            id: hashtag.id,
+          },
+        },
+      },
+    });
   }
 }

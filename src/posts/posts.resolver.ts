@@ -73,14 +73,6 @@ export class PostsResolver {
   }
 
   @Roles('USER')
-  @Query(() => ISeeHashtagOutput)
-  async seeHashtag(
-    @Args('input') seeHashtagInput: ISeeHashtagInput,
-  ): Promise<ISeeHashtagOutput> {
-    return this.postService.seeHashtag(seeHashtagInput);
-  }
-
-  @Roles('USER')
   @Query(() => ISeePostOutput)
   async seePost(
     @Args('input') seePostInput: ISeePostInput,
@@ -103,14 +95,6 @@ export class PostsResolver {
     @Args('input') searchPostsInput: ISearchPostsInput,
   ): Promise<ISearchPostsOutput> {
     return this.postService.searchPosts(searchPostsInput);
-  }
-
-  @Roles('USER')
-  @Query(() => ISeeRecommendHashtagsOutput)
-  async seeRecommendHashtags(
-    @Args('input') seeRecommendHashtagsInput: ISeeRecommendHashtagsInput,
-  ): Promise<ISeeRecommendHashtagsOutput> {
-    return this.postService.seeRecommendHashtags(seeRecommendHashtagsInput);
   }
 
   @Roles('USER')
@@ -147,5 +131,31 @@ export class PostsResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<IDeletePostOutput> {
     return this.postService.deletePost(deletePostInput, loggedInUser);
+  }
+}
+
+@Resolver(() => HashtagEntity)
+export class HashtagsResolver {
+  constructor(private readonly postService: PostsService) {}
+
+  @ResolveField(() => Int)
+  async totalPost(@Parent() hashtag: HashtagEntity) {
+    return this.postService.totalPost(hashtag);
+  }
+
+  @Roles('USER')
+  @Query(() => ISeeHashtagOutput)
+  async seeHashtag(
+    @Args('input') seeHashtagInput: ISeeHashtagInput,
+  ): Promise<ISeeHashtagOutput> {
+    return this.postService.seeHashtag(seeHashtagInput);
+  }
+
+  @Roles('USER')
+  @Query(() => ISeeRecommendHashtagsOutput)
+  async seeRecommendHashtags(
+    @Args('input') seeRecommendHashtagsInput: ISeeRecommendHashtagsInput,
+  ): Promise<ISeeRecommendHashtagsOutput> {
+    return this.postService.seeRecommendHashtags(seeRecommendHashtagsInput);
   }
 }
