@@ -1,3 +1,4 @@
+import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
@@ -9,6 +10,14 @@ import { PostsService } from './posts.service';
 @Resolver()
 export class PostsResolver {
   constructor(private readonly postService: PostsService) {}
+
+  @Roles('USER')
+  @Query(() => ISeePostOutput)
+  async seePost(
+    @Args('input') seePostInput: ISeePostInput,
+  ): Promise<ISeePostOutput> {
+    return this.postService.seePost(seePostInput);
+  }
 
   @Roles('USER')
   @Query(() => ISeeFeedOutput)

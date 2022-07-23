@@ -13,3 +13,17 @@ ___
 - [X] See Following w/ Pagination
 - [X] Search Users
 - [X] Computed Fields
+
+### Post
+___
+- [X] Create Post
+- [X] See Feed
+- [X] Toggle Like
+- [ ] Edit Post
+- [ ] Delete Post
+- [ ] See Detail Post
+- [ ] Search Post
+- [ ] See Post Comments
+- [ ] Computed Fields
+- [ ] See HashTag
+

@@ -4,6 +4,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { processHashtags } from 'src/utils';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
+import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 
 @Injectable()
@@ -126,6 +127,26 @@ export class PostsService {
       }
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seePost({ postId }: ISeePostInput): Promise<ISeePostOutput> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+      if (!post) throw new Error('Not Found Post');
+      return {
+        ok: true,
+        post,
       };
     } catch (error) {
       return {
