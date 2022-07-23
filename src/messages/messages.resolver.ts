@@ -75,6 +75,12 @@ export class MessageRoomResolver {
   }
 
   @Roles('USER')
+  @ResolveField(() => MessageEntity)
+  async lasMessage(@Parent() room: MessageRoomEntity): Promise<MessageEntity> {
+    return this.messageService.lastMessage(room);
+  }
+
+  @Roles('USER')
   @Query(() => ISeeRoomOutput)
   async seeRoom(
     @Args('input') seeRoomInput: ISeeRoomInput,

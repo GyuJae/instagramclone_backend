@@ -230,4 +230,15 @@ export class MessagesService {
       },
     });
   }
+
+  async lastMessage({ id: roomId }: MessageRoomEntity): Promise<MessageEntity> {
+    return await this.prismaService.message.findFirst({
+      where: {
+        roomId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
 }

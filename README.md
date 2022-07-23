@@ -42,5 +42,5 @@ ___
 - [X] See Room
 - [X] See Rooms
 - [X] Read Message
+- [X] Computed Fields
 - [ ] Realtime Messages
-- [ ] Computed Fields
