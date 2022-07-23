@@ -330,4 +330,12 @@ export class PostsService {
 
     return hashtags;
   }
+
+  async likeCount(post: PostEntity): Promise<number> {
+    return await this.prismaService.like.count({
+      where: {
+        postId: post.id,
+      },
+    });
+  }
 }

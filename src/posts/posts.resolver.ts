@@ -3,6 +3,7 @@ import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 import {
   Args,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -35,6 +36,11 @@ export class PostsResolver {
   @ResolveField(() => [HashtagEntity], { nullable: true })
   async hashtags(@Parent() post: PostEntity): Promise<HashtagEntity[] | null> {
     return this.postService.hashtags(post);
+  }
+
+  @ResolveField(() => Int)
+  async likeCount(@Parent() post: PostEntity): Promise<number> {
+    return this.postService.likeCount(post);
   }
 
   @Roles('USER')
