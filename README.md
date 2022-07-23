@@ -24,12 +24,22 @@ ___
 - [X] Delete Post
 - [X] Search Posts
 - [X] Read Recommend Hashtags
-- [ ] Computed Fields
-<!-- - [ ] See HashTag -->
+- [X] Computed Fields
+- [X] See HashTag
 
 ### Comment
 ___
 - [X] Create Comment
 - [X] Delete Comment
 - [X] Edit Comment
-- [ ] See Post Comments
+- [X] See Post Comments
+
+
+### Messages
+___
+- [ ] Send Message
+- [ ] See Room
+- [ ] See Rooms
+- [ ] See (Read) Message
+- [ ] Realtime Messages
+- [ ] Computed Fields
