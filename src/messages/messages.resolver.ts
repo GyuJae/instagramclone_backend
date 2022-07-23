@@ -6,6 +6,7 @@ import {
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
+import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
 import { MessageEntity, MessageRoomEntity } from './entities/message.entity';
 import { MessagesService } from './messages.service';
@@ -34,6 +35,14 @@ export class MessageRoomResolver {
     @Args('input') seeRoomInput: ISeeRoomInput,
   ): Promise<ISeeRoomOutput> {
     return this.messageService.seeRoom(seeRoomInput);
+  }
+
+  @Roles('USER')
+  @Query(() => ISeeRoomsOutput)
+  async seeRooms(
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<ISeeRoomsOutput> {
+    return this.messageService.seeRooms(loggedInUser);
   }
 
   @Roles('USER')

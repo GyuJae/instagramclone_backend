@@ -39,8 +39,8 @@ ___
 ___
 - [X] Send Message
 - [X] Create Room
-- [ ] See Room
-- [ ] See Rooms
+- [X] See Room
+- [X] See Rooms
 - [ ] See (Read) Message
 - [ ] Realtime Messages
 - [ ] Computed Fields
