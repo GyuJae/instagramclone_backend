@@ -1,5 +1,6 @@
 import {
   Args,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -46,6 +47,15 @@ export class MessageRoomResolver {
   @ResolveField(() => [MessageEntity])
   async messages(@Parent() room: MessageRoomEntity): Promise<MessageEntity[]> {
     return this.messageService.messages(room);
+  }
+
+  @Roles('USER')
+  @ResolveField(() => Int)
+  async unreadTotal(
+    @Parent() room: MessageRoomEntity,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<number> {
+    return this.messageService.unreadTotal(room, loggedInUser);
   }
 
   @Roles('USER')

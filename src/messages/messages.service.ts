@@ -158,4 +158,21 @@ export class MessagesService {
       },
     });
   }
+
+  async unreadTotal(
+    room: MessageRoomEntity,
+    loggedInUser: UserEntity,
+  ): Promise<number> {
+    return this.prismaService.message.count({
+      where: {
+        read: false,
+        roomId: room.id,
+        user: {
+          id: {
+            not: loggedInUser.id,
+          },
+        },
+      },
+    });
+  }
 }
