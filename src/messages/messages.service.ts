@@ -5,6 +5,7 @@ import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
 
 @Injectable()
@@ -83,6 +84,27 @@ export class MessagesService {
 
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeRoom({ roomId }: ISeeRoomInput): Promise<ISeeRoomOutput> {
+    try {
+      const room = await this.prismaService.messageRoom.findUnique({
+        where: {
+          id: roomId,
+        },
+      });
+      if (!room) throw new Error('Not Found Message Room');
+
+      return {
+        ok: true,
+        room,
       };
     } catch (error) {
       return {

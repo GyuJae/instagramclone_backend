@@ -1,10 +1,11 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
 import { MessageEntity, MessageRoomEntity } from './entities/message.entity';
 import { MessagesService } from './messages.service';
@@ -26,6 +27,14 @@ export class MessagesResolver {
 @Resolver(() => MessageRoomEntity)
 export class MessageRoomResolver {
   constructor(private readonly messageService: MessagesService) {}
+
+  @Roles('USER')
+  @Query(() => ISeeRoomOutput)
+  async seeRoom(
+    @Args('input') seeRoomInput: ISeeRoomInput,
+  ): Promise<ISeeRoomOutput> {
+    return this.messageService.seeRoom(seeRoomInput);
+  }
 
   @Roles('USER')
   @Mutation(() => ICreateMessageRoomOutput)

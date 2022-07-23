@@ -38,7 +38,7 @@ ___
 ### Messages
 ___
 - [X] Send Message
-- [ ] Create Room
+- [X] Create Room
 - [ ] See Room
 - [ ] See Rooms
 - [ ] See (Read) Message
