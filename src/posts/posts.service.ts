@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { processHashtags } from 'src/utils';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
+import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
 import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
@@ -190,6 +191,39 @@ export class PostsService {
         },
       });
 
+      return {
+        ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async deletePost(
+    { postId }: IDeletePostInput,
+    loggedInUser: UserEntity,
+  ): Promise<IDeletePostOutput> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: postId,
+        },
+        select: {
+          id: true,
+          userId: true,
+        },
+      });
+      if (!post) throw new Error('Not Found Post');
+      if (post.userId !== loggedInUser.id) throw new Error('No Authorzation');
+
+      await this.prismaService.post.delete({
+        where: {
+          id: post.id,
+        },
+      });
       return {
         ok: true,
       };

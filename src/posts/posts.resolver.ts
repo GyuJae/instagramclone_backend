@@ -1,3 +1,4 @@
+import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
@@ -6,6 +7,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { ICreatePostInput, ICreatePostOutput } from './dtos/createPost.dto';
 import { ISeeFeedOutput, ISeeFeedInput } from './dtos/seeFeed.dto';
 import { PostsService } from './posts.service';
+import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
 
 @Resolver()
 export class PostsResolver {
@@ -44,5 +46,23 @@ export class PostsResolver {
     @CurrentUser() loggedInUser: UserEntity,
   ): Promise<IToggleLikeOutput> {
     return this.postService.toggleLike(toggleLikeInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IEditPostOutput)
+  async editPost(
+    @Args('input') editPostInput: IEditPostInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IEditPostOutput> {
+    return this.postService.editPost(editPostInput, loggedInUser);
+  }
+
+  @Roles('USER')
+  @Mutation(() => IDeletePostOutput)
+  async deletePost(
+    @Args('input') deletePostInput: IDeletePostInput,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): Promise<IDeletePostOutput> {
+    return this.postService.deletePost(deletePostInput, loggedInUser);
   }
 }

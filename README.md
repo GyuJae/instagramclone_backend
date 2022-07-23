@@ -20,8 +20,8 @@ ___
 - [X] See Feed
 - [X] Toggle Like
 - [X] See Post
-- [ ] Edit Post
-- [ ] Delete Post
+- [X] Edit Post
+- [X] Delete Post
 - [ ] Search Post
 - [ ] See Post Comments
 - [ ] Computed Fields
