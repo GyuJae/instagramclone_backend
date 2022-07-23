@@ -11,6 +11,7 @@ import { HttpModule } from '@nestjs/axios';
 import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { CommentsModule } from './comments/comments.module';
     }),
     PostsModule,
     CommentsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [],
