@@ -9,6 +9,10 @@ import { ISeeFeedOutput, ISeeFeedInput } from './dtos/seeFeed.dto';
 import { PostsService } from './posts.service';
 import { IDeletePostInput, IDeletePostOutput } from './dtos/deletePost.dto';
 import { ISearchPostsInput, ISearchPostsOutput } from './dtos/searchPosts.dto';
+import {
+  ISeeRecommendHashtagsInput,
+  ISeeRecommendHashtagsOutput,
+} from './dtos/seeRecommendHashtags.dto';
 
 @Resolver()
 export class PostsResolver {
@@ -37,6 +41,14 @@ export class PostsResolver {
     @Args('input') searchPostsInput: ISearchPostsInput,
   ): Promise<ISearchPostsOutput> {
     return this.postService.searchPosts(searchPostsInput);
+  }
+
+  @Roles('USER')
+  @Query(() => ISeeRecommendHashtagsOutput)
+  async seeRecommendHashtags(
+    @Args('input') seeRecommendHashtagsInput: ISeeRecommendHashtagsInput,
+  ): Promise<ISeeRecommendHashtagsOutput> {
+    return this.postService.seeRecommendHashtags(seeRecommendHashtagsInput);
   }
 
   @Roles('USER')

@@ -8,6 +8,10 @@ import { IEditPostInput, IEditPostOutput } from './dtos/editPost.dto';
 import { ISearchPostsInput, ISearchPostsOutput } from './dtos/searchPosts.dto';
 import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
+import {
+  ISeeRecommendHashtagsInput,
+  ISeeRecommendHashtagsOutput,
+} from './dtos/seeRecommendHashtags.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
 
 @Injectable()
@@ -250,6 +254,29 @@ export class PostsService {
       return {
         ok: true,
         posts,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeRecommendHashtags({
+    keyword,
+  }: ISeeRecommendHashtagsInput): Promise<ISeeRecommendHashtagsOutput> {
+    try {
+      const hashtags = await this.prismaService.hashtag.findMany({
+        where: {
+          hashtag: {
+            startsWith: keyword,
+          },
+        },
+      });
+      return {
+        ok: true,
+        hashtags,
       };
     } catch (error) {
       return {
