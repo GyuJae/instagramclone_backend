@@ -20,7 +20,7 @@ import {
   ISeeRecommendHashtagsInput,
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
-import { PostEntity } from './entities/post.entity';
+import { HashtagEntity, PostEntity } from './entities/post.entity';
 
 @Resolver(() => PostEntity)
 export class PostsResolver {
@@ -29,6 +29,11 @@ export class PostsResolver {
   @ResolveField(() => UserEntity)
   async user(@Parent() post: PostEntity): Promise<UserEntity> {
     return this.postService.user(post);
+  }
+
+  @ResolveField(() => HashtagEntity)
+  async hashtags(@Parent() post: PostEntity): Promise<HashtagEntity[]> {
+    return this.postService.hashtags(post);
   }
 
   @Roles('USER')

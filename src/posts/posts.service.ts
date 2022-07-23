@@ -13,7 +13,7 @@ import {
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
-import { PostEntity } from './entities/post.entity';
+import { HashtagEntity, PostEntity } from './entities/post.entity';
 
 @Injectable()
 export class PostsService {
@@ -287,16 +287,26 @@ export class PostsService {
     }
   }
 
-  async user(post: PostEntity): Promise<UserEntity | null> {
-    try {
-      const user = await this.prismaService.user.findUnique({
-        where: {
-          id: post.userId,
+  async user(post: PostEntity): Promise<UserEntity> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: post.userId,
+      },
+    });
+    return user;
+  }
+
+  async hashtags(post: PostEntity): Promise<HashtagEntity[]> {
+    const hashtags = await this.prismaService.hashtag.findMany({
+      where: {
+        posts: {
+          some: {
+            id: post.id,
+          },
         },
-      });
-      return user;
-    } catch {
-      return null;
-    }
+      },
+    });
+
+    return hashtags;
   }
 }
