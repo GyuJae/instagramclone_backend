@@ -382,4 +382,8 @@ export class UsersService {
       return 0;
     }
   }
+
+  isMe(currentUser: UserEntity, loggedInUser: UserEntity): boolean {
+    return currentUser.id === loggedInUser.id;
+  }
 }

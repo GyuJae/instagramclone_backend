@@ -20,6 +20,7 @@ import { AppController } from './app.controller';
       playground: false,
       sortSchema: true,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      fieldResolverEnhancers: ['guards'],
     }),
     UsersModule,
     PrismaModule,

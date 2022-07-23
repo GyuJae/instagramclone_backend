@@ -49,6 +49,15 @@ export class UsersResolver {
     return this.userService.totalFollower(user);
   }
 
+  @Roles('USER')
+  @ResolveField('isMe', () => Boolean)
+  isMe(
+    @Parent() currentUser: UserEntity,
+    @CurrentUser() loggedInUser: UserEntity,
+  ): boolean {
+    return this.userService.isMe(currentUser, loggedInUser);
+  }
+
   @Query(() => IFindUserByIdOutput)
   async findUserById(
     @Args('input') findUserByIdInput: IFindUserByIdInput,
