@@ -10,6 +10,7 @@ import {
   IDeleteCommentOutput,
 } from './dtos/deleteComment.dto';
 import { IEditCommentInput, IEditCommentOutput } from './dtos/editComment.dto';
+import { ISeeCommentsInput, ISeeCommentsOutput } from './dtos/seeComments.dto';
 
 @Injectable()
 export class CommentsService {
@@ -113,6 +114,36 @@ export class CommentsService {
       });
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seeComments({
+    postId,
+  }: ISeeCommentsInput): Promise<ISeeCommentsOutput> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: postId,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!post) throw new Error('Not Fount Post');
+      const comments = await this.prismaService.comment.findMany({
+        where: {
+          postId: post.id,
+        },
+      });
+      return {
+        ok: true,
+        comments,
       };
     } catch (error) {
       return {
