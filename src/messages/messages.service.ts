@@ -1,11 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
+import { NEW_MESSAGE, PUB_SUB } from 'src/core/core.constants';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { ILastMessageOutput } from './dtos/lastMessage.dto';
 import { IReadMessageInput, IReadMessageOutput } from './dtos/readMessage.dto';
+import { IRoomUpdatesInput } from './dtos/roomUpdates.dto';
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
@@ -13,7 +17,10 @@ import { MessageEntity, MessageRoomEntity } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(PUB_SUB) private readonly pubSub: PubSub,
+  ) {}
 
   async sendMessage(
     { roomId, payload }: ISendMessageInput,
@@ -26,12 +33,16 @@ export class MessagesService {
       });
       if (!room) throw new Error('Not Found Room');
 
-      await this.prismaService.message.create({
+      const message = await this.prismaService.message.create({
         data: {
           userId: loggedInUser.id,
           roomId: room.id,
           payload,
         },
+      });
+
+      await this.pubSub.publish(NEW_MESSAGE, {
+        roomUpdates: message,
       });
 
       return {
@@ -96,11 +107,19 @@ export class MessagesService {
     }
   }
 
-  async seeRoom({ roomId }: ISeeRoomInput): Promise<ISeeRoomOutput> {
+  async seeRoom(
+    { roomId }: ISeeRoomInput,
+    loggedInUser: UserEntity,
+  ): Promise<ISeeRoomOutput> {
     try {
-      const room = await this.prismaService.messageRoom.findUnique({
+      const room = await this.prismaService.messageRoom.findFirst({
         where: {
           id: roomId,
+          users: {
+            some: {
+              id: loggedInUser.id,
+            },
+          },
         },
       });
       if (!room) throw new Error('Not Found Message Room');
@@ -231,8 +250,10 @@ export class MessagesService {
     });
   }
 
-  async lastMessage({ id: roomId }: MessageRoomEntity): Promise<MessageEntity> {
-    return await this.prismaService.message.findFirst({
+  async lastMessage({
+    id: roomId,
+  }: MessageRoomEntity): Promise<ILastMessageOutput> {
+    const message = await this.prismaService.message.findFirst({
       where: {
         roomId,
       },
@@ -240,5 +261,31 @@ export class MessagesService {
         createdAt: 'desc',
       },
     });
+    return {
+      message,
+    };
+  }
+
+  async filterRoomUpdates(
+    newMessage: MessageEntity,
+    input: IRoomUpdatesInput,
+    user: UserEntity,
+  ): Promise<boolean> {
+    try {
+      if (newMessage.roomId !== input.roomId) return false;
+      const room = await this.prismaService.messageRoom.findFirst({
+        where: {
+          id: newMessage.roomId,
+          users: {
+            some: {
+              id: user.id,
+            },
+          },
+        },
+      });
+      return !!room;
+    } catch {
+      return false;
+    }
   }
 }

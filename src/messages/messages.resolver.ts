@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common';
 import {
   Args,
   Int,
@@ -6,14 +7,19 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
+import { PubSub } from 'graphql-subscriptions';
 import { CurrentUser, Roles } from 'src/auth/auth.decorator';
+import { NEW_MESSAGE, PUB_SUB } from 'src/core/core.constants';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
   ICreateMessageRoomInput,
   ICreateMessageRoomOutput,
 } from './dtos/createMessageRoom.dto';
+import { ILastMessageOutput } from './dtos/lastMessage.dto';
 import { IReadMessageInput, IReadMessageOutput } from './dtos/readMessage.dto';
+import { IRoomUpdatesInput } from './dtos/roomUpdates.dto';
 import { ISeeRoomInput, ISeeRoomOutput } from './dtos/seeRoom.dto';
 import { ISeeRoomsOutput } from './dtos/seeRooms.dto';
 import { ISendMessageInput, ISendMessageOutput } from './dtos/sendMessage.dto';
@@ -51,7 +57,10 @@ export class MessagesResolver {
 
 @Resolver(() => MessageRoomEntity)
 export class MessageRoomResolver {
-  constructor(private readonly messageService: MessagesService) {}
+  constructor(
+    private readonly messageService: MessagesService,
+    @Inject(PUB_SUB) private readonly pusSub: PubSub,
+  ) {}
 
   @Roles('USER')
   @ResolveField(() => [UserEntity])
@@ -75,8 +84,10 @@ export class MessageRoomResolver {
   }
 
   @Roles('USER')
-  @ResolveField(() => MessageEntity)
-  async lasMessage(@Parent() room: MessageRoomEntity): Promise<MessageEntity> {
+  @ResolveField(() => ILastMessageOutput)
+  async lastMessage(
+    @Parent() room: MessageRoomEntity,
+  ): Promise<ILastMessageOutput> {
     return this.messageService.lastMessage(room);
   }
 
@@ -84,8 +95,9 @@ export class MessageRoomResolver {
   @Query(() => ISeeRoomOutput)
   async seeRoom(
     @Args('input') seeRoomInput: ISeeRoomInput,
+    @CurrentUser() loggedInUser: UserEntity,
   ): Promise<ISeeRoomOutput> {
-    return this.messageService.seeRoom(seeRoomInput);
+    return this.messageService.seeRoom(seeRoomInput, loggedInUser);
   }
 
   @Roles('USER')
@@ -106,5 +118,19 @@ export class MessageRoomResolver {
       createMessageRoomInput,
       loggedInUser,
     );
+  }
+
+  @Roles('USER')
+  @Subscription(() => MessageEntity, {
+    filter: (
+      { roomUpdates }: { roomUpdates: MessageEntity },
+      { input }: { input: IRoomUpdatesInput },
+    ) => {
+      return roomUpdates.roomId === input.roomId;
+    },
+  })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  roomUpdates(@Args('input') _: IRoomUpdatesInput) {
+    return this.pusSub.asyncIterator(NEW_MESSAGE);
   }
 }

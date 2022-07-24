@@ -5,7 +5,7 @@ import { MessageEntity } from '../entities/message.entity';
 @InputType()
 export class ISendMessageInput extends PickType(
   MessageEntity,
-  ['payload', 'userId', 'roomId'],
+  ['payload', 'roomId'],
   InputType,
 ) {}
 
