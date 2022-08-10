@@ -19,7 +19,7 @@ import {
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
 import { IToggleLikeInput, IToggleLikeOutput } from './dtos/toggleLike.dto';
-import { HashtagEntity, PostEntity } from './entities/post.entity';
+import { FileEntity, HashtagEntity, PostEntity } from './entities/post.entity';
 
 @Injectable()
 export class PostsService {
@@ -416,6 +416,14 @@ export class PostsService {
             id: hashtag.id,
           },
         },
+      },
+    });
+  }
+
+  async files(post: PostEntity): Promise<FileEntity[]> {
+    return this.prismaService.file.findMany({
+      where: {
+        id: post.id,
       },
     });
   }

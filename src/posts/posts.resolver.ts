@@ -22,7 +22,7 @@ import {
   ISeeRecommendHashtagsInput,
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
-import { HashtagEntity, PostEntity } from './entities/post.entity';
+import { FileEntity, HashtagEntity, PostEntity } from './entities/post.entity';
 import { ISeeHashtagInput, ISeeHashtagOutput } from './dtos/seeHashtag.dto';
 import {
   ISeePostsByHashtagInput,
@@ -56,6 +56,11 @@ export class PostsResolver {
   @ResolveField(() => [CommentEntity])
   async comments(@Parent() post: PostEntity): Promise<CommentEntity[]> {
     return this.postService.comments(post);
+  }
+
+  @ResolveField(() => [FileEntity])
+  async files(@Parent() post: PostEntity): Promise<FileEntity[]> {
+    return this.postService.files(post);
   }
 
   @Roles('USER')
