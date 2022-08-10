@@ -11,6 +11,7 @@ import {
 } from './dtos/deleteComment.dto';
 import { IEditCommentInput, IEditCommentOutput } from './dtos/editComment.dto';
 import { ISeeCommentsInput, ISeeCommentsOutput } from './dtos/seeComments.dto';
+import { CommentEntity } from './entities/comment.entity';
 
 @Injectable()
 export class CommentsService {
@@ -151,5 +152,18 @@ export class CommentsService {
         error: error.message,
       };
     }
+  }
+
+  async user({ id: commentId }: CommentEntity): Promise<UserEntity> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        comments: {
+          some: {
+            id: commentId,
+          },
+        },
+      },
+    });
+    return user;
   }
 }

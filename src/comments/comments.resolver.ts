@@ -1,5 +1,12 @@
 import { CommentsService } from './comments.service';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import {
   ICreateCommentInput,
   ICreateCommentOutput,
@@ -17,6 +24,11 @@ import { ISeeCommentsInput, ISeeCommentsOutput } from './dtos/seeComments.dto';
 @Resolver(() => CommentEntity)
 export class CommentsResolver {
   constructor(private readonly commentService: CommentsService) {}
+
+  @ResolveField(() => UserEntity)
+  async user(@Parent() comment: CommentEntity): Promise<UserEntity> {
+    return this.commentService.user(comment);
+  }
 
   @Roles('USER')
   @Query(() => ISeeCommentsOutput)
