@@ -166,4 +166,19 @@ export class CommentsService {
     });
     return user;
   }
+
+  async isMine(
+    { id: commentId }: CommentEntity,
+    authUser: UserEntity,
+  ): Promise<boolean> {
+    const comment = await this.prismaService.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+    return comment.userId === authUser.id;
+  }
 }

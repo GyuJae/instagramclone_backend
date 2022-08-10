@@ -31,6 +31,15 @@ export class CommentsResolver {
   }
 
   @Roles('USER')
+  @ResolveField(() => Boolean)
+  async isMine(
+    @Parent() comment: CommentEntity,
+    @CurrentUser() authUser: UserEntity,
+  ): Promise<boolean> {
+    return this.commentService.isMine(comment, authUser);
+  }
+
+  @Roles('USER')
   @Query(() => ISeeCommentsOutput)
   async seeComments(
     @Args('input') seeCommentsInput: ISeeCommentsInput,
