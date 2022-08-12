@@ -62,14 +62,13 @@ export class PostsService {
   }
 
   async seeFeed(
-    { lastId }: ISeeFeedInput,
+    { offset }: ISeeFeedInput,
     loggedInUser: UserEntity,
   ): Promise<ISeeFeedOutput> {
     try {
       const posts = await this.prismaService.post.findMany({
         take: 2,
-        skip: lastId ? 1 : 0,
-        ...(lastId && { cursor: { id: lastId } }),
+        skip: offset,
         where: {
           OR: [
             {
@@ -90,9 +89,28 @@ export class PostsService {
           createdAt: 'desc',
         },
       });
+      const count = await this.prismaService.post.count({
+        where: {
+          OR: [
+            {
+              user: {
+                followers: {
+                  some: {
+                    id: loggedInUser.id,
+                  },
+                },
+              },
+            },
+            {
+              userId: loggedInUser.id,
+            },
+          ],
+        },
+      });
       return {
         ok: true,
         posts,
+        hasNextPage: count > offset + 2,
       };
     } catch (error) {
       return {

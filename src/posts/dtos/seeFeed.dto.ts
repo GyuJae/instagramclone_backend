@@ -4,12 +4,15 @@ import { PostEntity } from '../entities/post.entity';
 
 @InputType()
 export class ISeeFeedInput {
-  @Field(() => Int, { nullable: true })
-  lastId?: number;
+  @Field(() => Int, { defaultValue: 0, nullable: true })
+  offset?: number;
 }
 
 @ObjectType()
 export class ISeeFeedOutput extends CoreOutput {
   @Field(() => [PostEntity], { nullable: true })
   posts?: PostEntity[];
+
+  @Field(() => Boolean, { defaultValue: false })
+  hasNextPage?: boolean;
 }
