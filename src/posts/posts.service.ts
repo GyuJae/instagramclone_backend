@@ -67,7 +67,7 @@ export class PostsService {
   ): Promise<ISeeFeedOutput> {
     try {
       const posts = await this.prismaService.post.findMany({
-        take: 20,
+        take: 2,
         skip: lastId ? 1 : 0,
         ...(lastId && { cursor: { id: lastId } }),
         where: {
@@ -85,6 +85,9 @@ export class PostsService {
               userId: loggedInUser.id,
             },
           ],
+        },
+        orderBy: {
+          createdAt: 'desc',
         },
       });
       return {
