@@ -140,9 +140,9 @@ export class PostsService {
       if (!post) throw new Error('Not Found Post by this post id');
       const users = await this.prismaService.user.findMany({
         where: {
-          posts: {
+          likes: {
             some: {
-              id: post.id,
+              postId: post.id,
             },
           },
         },
