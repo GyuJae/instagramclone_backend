@@ -149,9 +149,19 @@ export class PostsService {
         skip: offset,
         take: 10,
       });
+      const count = await this.prismaService.user.count({
+        where: {
+          posts: {
+            some: {
+              id: post.id,
+            },
+          },
+        },
+      });
       return {
         ok: true,
         users,
+        hasNextPage: count > offset + 10,
       };
     } catch (error) {
       return {

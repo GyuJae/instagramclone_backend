@@ -15,4 +15,7 @@ export class ISeePostLikesInput {
 export class ISeePostLikesOutput extends CoreOutput {
   @Field(() => [UserEntity], { nullable: true })
   users?: UserEntity[];
+
+  @Field(() => Boolean, { defaultValue: false })
+  hasNextPage?: boolean;
 }
