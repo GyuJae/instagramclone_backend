@@ -180,13 +180,13 @@ export class UsersService {
   }
 
   async toggleFollow(
-    { username }: IToggleFollowInput,
+    { userId }: IToggleFollowInput,
     loggedInUser: UserEntity,
   ): Promise<IToggleFollowOutput> {
     try {
       const user = await this.prismaService.user.findUnique({
         where: {
-          username,
+          id: userId,
         },
         select: {
           id: true,

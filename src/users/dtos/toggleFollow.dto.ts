@@ -1,13 +1,11 @@
-import { InputType, ObjectType, PickType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/core/dtos/coreOutput.dto';
-import { UserEntity } from '../entities/user.entity';
 
 @InputType()
-export class IToggleFollowInput extends PickType(
-  UserEntity,
-  ['username'],
-  InputType,
-) {}
+export class IToggleFollowInput {
+  @Field(() => Int)
+  userId: number;
+}
 
 @ObjectType()
 export class IToggleFollowOutput extends CoreOutput {}
