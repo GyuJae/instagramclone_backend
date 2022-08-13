@@ -28,6 +28,10 @@ import {
   ISeePostsByHashtagInput,
   ISeePostsByHashtagOutput,
 } from './dtos/seePostsByHashtag.dto';
+import {
+  ISeePostLikesInput,
+  ISeePostLikesOutput,
+} from './dtos/seePostLikes.dto';
 
 @Resolver(() => PostEntity)
 export class PostsResolver {
@@ -113,6 +117,15 @@ export class PostsResolver {
   ): Promise<ISeePostsByHashtagOutput> {
     return this.postService.seePostsByHashtag(seePostsByHashtagInput);
   }
+
+  @Roles('USER')
+  @Query(() => ISeePostLikesOutput)
+  async seePostLikes(
+    @Args('input') seePostLikesInput: ISeePostLikesInput,
+  ): Promise<ISeePostLikesOutput> {
+    return this.postService.seePostLikes(seePostLikesInput);
+  }
+
   @Roles('USER')
   @Mutation(() => ICreatePostOutput)
   async createPost(

@@ -11,6 +11,10 @@ import { ISeeFeedInput, ISeeFeedOutput } from './dtos/seeFeed.dto';
 import { ISeeHashtagInput, ISeeHashtagOutput } from './dtos/seeHashtag.dto';
 import { ISeePostInput, ISeePostOutput } from './dtos/seePost.dto';
 import {
+  ISeePostLikesInput,
+  ISeePostLikesOutput,
+} from './dtos/seePostLikes.dto';
+import {
   ISeePostsByHashtagInput,
   ISeePostsByHashtagOutput,
 } from './dtos/seePostsByHashtag.dto';
@@ -67,7 +71,7 @@ export class PostsService {
   ): Promise<ISeeFeedOutput> {
     try {
       const posts = await this.prismaService.post.findMany({
-        take: 2,
+        take: 10,
         skip: offset,
         where: {
           OR: [
@@ -110,7 +114,44 @@ export class PostsService {
       return {
         ok: true,
         posts,
-        hasNextPage: count > offset + 2,
+        hasNextPage: count > offset + 10,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seePostLikes({
+    postId,
+    offset,
+  }: ISeePostLikesInput): Promise<ISeePostLikesOutput> {
+    try {
+      const post = await this.prismaService.post.findUnique({
+        where: {
+          id: postId,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!post) throw new Error('Not Found Post by this post id');
+      const users = await this.prismaService.user.findMany({
+        where: {
+          posts: {
+            some: {
+              id: post.id,
+            },
+          },
+        },
+        skip: offset,
+        take: 10,
+      });
+      return {
+        ok: true,
+        users,
       };
     } catch (error) {
       return {
