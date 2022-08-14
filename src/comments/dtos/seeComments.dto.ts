@@ -9,11 +9,14 @@ export class ISeeCommentsInput extends PickType(
   InputType,
 ) {
   @Field(() => Int)
-  lastId: number;
+  offset: number;
 }
 
 @ObjectType()
 export class ISeeCommentsOutput extends CoreOutput {
   @Field(() => [CommentEntity], { nullable: true })
   comments?: CommentEntity[];
+
+  @Field(() => Boolean, { defaultValue: false })
+  hasNextPage?: boolean;
 }

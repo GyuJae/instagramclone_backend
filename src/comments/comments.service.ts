@@ -126,6 +126,7 @@ export class CommentsService {
 
   async seeComments({
     postId,
+    offset,
   }: ISeeCommentsInput): Promise<ISeeCommentsOutput> {
     try {
       const post = await this.prismaService.post.findUnique({
@@ -141,10 +142,18 @@ export class CommentsService {
         where: {
           postId: post.id,
         },
+        take: 20,
+        skip: offset,
+      });
+      const count = await this.prismaService.comment.count({
+        where: {
+          postId: post.id,
+        },
       });
       return {
         ok: true,
         comments,
+        hasNextPage: count > offset + 20,
       };
     } catch (error) {
       return {
