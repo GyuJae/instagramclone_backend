@@ -7,12 +7,15 @@ export class ISearchPostsInput {
   @Field(() => String)
   keyword: string;
 
-  @Field(() => Int, { nullable: true })
-  lastId?: number;
+  @Field(() => Int)
+  offset: number;
 }
 
 @ObjectType()
 export class ISearchPostsOutput extends CoreOutput {
   @Field(() => [PostEntity], { nullable: true })
   posts?: PostEntity[];
+
+  @Field(() => Boolean, { defaultValue: false })
+  hasNextPage?: boolean;
 }

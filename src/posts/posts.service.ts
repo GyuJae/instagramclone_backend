@@ -321,7 +321,7 @@ export class PostsService {
 
   async searchPosts({
     keyword,
-    lastId,
+    offset,
   }: ISearchPostsInput): Promise<ISearchPostsOutput> {
     try {
       const posts = await this.prismaService.post.findMany({
@@ -331,12 +331,19 @@ export class PostsService {
           },
         },
         take: 20,
-        skip: lastId ? 1 : 0,
-        ...(lastId && { cursor: { id: lastId } }),
+        skip: offset,
+      });
+      const count = await this.prismaService.post.count({
+        where: {
+          caption: {
+            contains: keyword,
+          },
+        },
       });
       return {
         ok: true,
         posts,
+        hasNextPage: count > offset + 20,
       };
     } catch (error) {
       return {
