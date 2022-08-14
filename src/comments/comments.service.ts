@@ -32,16 +32,20 @@ export class CommentsService {
       });
       if (!post) throw new Error('Not Found Post');
 
-      await this.prismaService.comment.create({
+      const { id: commentId } = await this.prismaService.comment.create({
         data: {
           payload,
           postId: post.id,
           userId: loggedInUser.id,
         },
+        select: {
+          id: true,
+        },
       });
 
       return {
         ok: true,
+        commentId,
       };
     } catch (error) {
       return {

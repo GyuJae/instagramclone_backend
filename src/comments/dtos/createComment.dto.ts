@@ -1,4 +1,4 @@
-import { InputType, ObjectType, PickType } from '@nestjs/graphql';
+import { Field, InputType, Int, ObjectType, PickType } from '@nestjs/graphql';
 import { CoreOutput } from 'src/core/dtos/coreOutput.dto';
 import { CommentEntity } from '../entities/comment.entity';
 
@@ -10,4 +10,7 @@ export class ICreateCommentInput extends PickType(
 ) {}
 
 @ObjectType()
-export class ICreateCommentOutput extends CoreOutput {}
+export class ICreateCommentOutput extends CoreOutput {
+  @Field(() => Int, { nullable: true })
+  commentId?: number;
+}
