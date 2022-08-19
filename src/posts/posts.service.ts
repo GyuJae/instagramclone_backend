@@ -500,10 +500,11 @@ export class PostsService {
   }
 
   async files(post: PostEntity): Promise<FileEntity[]> {
-    return this.prismaService.file.findMany({
+    const files = await this.prismaService.file.findMany({
       where: {
-        id: post.id,
+        postId: post.id,
       },
     });
+    return files;
   }
 }
