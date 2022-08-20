@@ -32,6 +32,10 @@ import {
   ISeePostLikesInput,
   ISeePostLikesOutput,
 } from './dtos/seePostLikes.dto';
+import {
+  ISeePostsByUsernameInput,
+  ISeePostsByUsernameOutput,
+} from './dtos/seePostsByUsername.dto';
 
 @Resolver(() => PostEntity)
 export class PostsResolver {
@@ -124,6 +128,14 @@ export class PostsResolver {
     @Args('input') seePostLikesInput: ISeePostLikesInput,
   ): Promise<ISeePostLikesOutput> {
     return this.postService.seePostLikes(seePostLikesInput);
+  }
+
+  @Roles('USER')
+  @Query(() => ISeePostsByUsernameOutput)
+  async seePostsByUsername(
+    @Args('input') seePostsByUsernameInput: ISeePostsByUsernameInput,
+  ): Promise<ISeePostsByUsernameOutput> {
+    return this.postService.seePostsByUsername(seePostsByUsernameInput);
   }
 
   @Roles('USER')

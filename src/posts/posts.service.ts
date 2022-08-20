@@ -19,6 +19,10 @@ import {
   ISeePostsByHashtagOutput,
 } from './dtos/seePostsByHashtag.dto';
 import {
+  ISeePostsByUsernameInput,
+  ISeePostsByUsernameOutput,
+} from './dtos/seePostsByUsername.dto';
+import {
   ISeeRecommendHashtagsInput,
   ISeeRecommendHashtagsOutput,
 } from './dtos/seeRecommendHashtags.dto';
@@ -412,6 +416,29 @@ export class PostsService {
         take: 20,
         skip: lastId ? 1 : 0,
         ...(lastId && { cursor: { id: lastId } }),
+      });
+      return {
+        ok: true,
+        posts,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error.message,
+      };
+    }
+  }
+
+  async seePostsByUsername({
+    username,
+  }: ISeePostsByUsernameInput): Promise<ISeePostsByUsernameOutput> {
+    try {
+      const posts = await this.prismaService.post.findMany({
+        where: {
+          user: {
+            username,
+          },
+        },
       });
       return {
         ok: true,
