@@ -72,7 +72,7 @@ export class UsersService {
           id: true,
         },
       });
-      if (emailExist) throw new Error('❌ This Email already exist.');
+      if (emailExist) throw new Error('This Email already exist.');
 
       const usernameExist = await this.prismaService.user.findUnique({
         where: {
@@ -83,7 +83,7 @@ export class UsersService {
         },
       });
 
-      if (usernameExist) throw new Error('❌ This Username already exist.');
+      if (usernameExist) throw new Error('This Username already exist.');
 
       const hashPassword = await bcrypt.hash(password, 10);
       await this.prismaService.user.create({
@@ -110,10 +110,10 @@ export class UsersService {
         where: { email },
         select: { id: true, password: true },
       });
-      if (!user) throw new Error('❌ Not Found User by this email.');
+      if (!user) throw new Error('Not Found User by this email.');
 
       const comparePassword = await bcrypt.compare(password, user.password);
-      if (!comparePassword) throw new Error('❌ Wrong Password.');
+      if (!comparePassword) throw new Error('Wrong Password.');
 
       const { token } = await this.authService.sign({ userId: user.id });
       return {
@@ -139,7 +139,7 @@ export class UsersService {
           id: true,
         },
       });
-      if (!currentUser) throw new Error('❌ User Not Found.');
+      if (!currentUser) throw new Error('User Not Found.');
       await this.prismaService.user.update({
         where: {
           id: currentUser.id,

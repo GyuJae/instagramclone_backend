@@ -26,14 +26,14 @@ export class AuthService {
       const { id } = await this.jwtService.verify(token, {
         secret: this.configService.get('JWT_PRIVATE_KEY'),
       });
-      if (!id) throw new Error('❌ Verify Error not found id');
+      if (!id) throw new Error('Verify Error not found id');
       const user = await this.prismaService.user.findUnique({
         where: {
           id,
         },
       });
 
-      if (!user) throw new Error('❌ Not Found User');
+      if (!user) throw new Error('Not Found User');
 
       return user;
     } catch {
