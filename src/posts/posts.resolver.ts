@@ -116,7 +116,7 @@ export class PostsResolver {
 
   @Roles('USER')
   @Query(() => ISeePostsByHashtagOutput)
-  async seePostsByHash(
+  async seePostsByHashtag(
     @Args('input') seePostsByHashtagInput: ISeePostsByHashtagInput,
   ): Promise<ISeePostsByHashtagOutput> {
     return this.postService.seePostsByHashtag(seePostsByHashtagInput);
