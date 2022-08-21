@@ -9,7 +9,7 @@ export class ISeePostsByHashtagInput extends PickType(
   InputType,
 ) {
   @Field(() => Int, { nullable: true })
-  lastId?: number;
+  offset?: number;
 }
 
 @ObjectType()

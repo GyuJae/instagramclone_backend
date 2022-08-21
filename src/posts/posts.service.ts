@@ -401,7 +401,7 @@ export class PostsService {
   }
 
   async seePostsByHashtag({
-    lastId,
+    offset,
     hashtag,
   }: ISeePostsByHashtagInput): Promise<ISeePostsByHashtagOutput> {
     try {
@@ -414,8 +414,7 @@ export class PostsService {
           },
         },
         take: 20,
-        skip: lastId ? 1 : 0,
-        ...(lastId && { cursor: { id: lastId } }),
+        skip: offset || 0,
       });
       return {
         ok: true,
