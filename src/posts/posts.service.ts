@@ -439,6 +439,9 @@ export class PostsService {
             username,
           },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
       return {
         ok: true,
