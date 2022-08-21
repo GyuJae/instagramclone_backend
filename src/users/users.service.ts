@@ -28,6 +28,7 @@ import {
 } from './dtos/seeFollowers.dto';
 import { ISearchUsersInput, ISearchUsersOutput } from './dtos/searchUsers.dto';
 import { IMeOutput } from './dtos/me.dto';
+import { ISeeFriendsInput, ISeeFriendsOutput } from './dtos/seeFriends.dto';
 
 @Injectable()
 export class UsersService {
@@ -381,6 +382,25 @@ export class UsersService {
       return totalFollower;
     } catch {
       return 0;
+    }
+  }
+
+  async seeFriends({ offset }: ISeeFriendsInput): Promise<ISeeFriendsOutput> {
+    try {
+      const users = await this.prismaService.user.findMany({
+        take: 5,
+        skip: offset || 0,
+      });
+
+      return {
+        ok: true,
+        users,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        error,
+      };
     }
   }
 
