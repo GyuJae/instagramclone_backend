@@ -117,9 +117,11 @@ export class UsersResolver {
 
   @Roles('USER')
   @Query(() => ISeeFriendsOutput)
-  async seeFriends(@Args('input') seeFriendsInput: ISeeFriendsInput): Promise<ISeeFriendsOutput> {
-    return this.userService.seeFriends(seeFriendsInput)
-    }
+  async seeFriends(
+    @Args('input') seeFriendsInput: ISeeFriendsInput,
+  ): Promise<ISeeFriendsOutput> {
+    return this.userService.seeFriends(seeFriendsInput);
+  }
 
   @Mutation(() => CreateAccountOutput, { description: 'Create Account' })
   async createAccount(
