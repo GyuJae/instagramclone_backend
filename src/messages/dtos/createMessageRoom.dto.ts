@@ -8,4 +8,7 @@ export class ICreateMessageRoomInput {
 }
 
 @ObjectType()
-export class ICreateMessageRoomOutput extends CoreOutput {}
+export class ICreateMessageRoomOutput extends CoreOutput {
+  @Field(() => Int, { nullable: true })
+  roomId?: number;
+}

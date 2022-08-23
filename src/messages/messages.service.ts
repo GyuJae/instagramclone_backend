@@ -70,7 +70,7 @@ export class MessagesService {
         },
       });
       if (!user) throw new Error('Not Found User');
-      const room = await this.prismaService.messageRoom.findFirst({
+      const existRoom = await this.prismaService.messageRoom.findFirst({
         where: {
           users: {
             some: {
@@ -78,10 +78,18 @@ export class MessagesService {
             },
           },
         },
+        select: {
+          id: true,
+        },
       });
-      if (room) throw new Error('Already Exist');
+      if (existRoom) {
+        return {
+          ok: true,
+          roomId: existRoom.id,
+        };
+      }
 
-      await this.prismaService.messageRoom.create({
+      const newRoom = await this.prismaService.messageRoom.create({
         data: {
           users: {
             connect: [
@@ -98,6 +106,7 @@ export class MessagesService {
 
       return {
         ok: true,
+        roomId: newRoom.id,
       };
     } catch (error) {
       return {
