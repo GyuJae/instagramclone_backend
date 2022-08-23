@@ -61,6 +61,7 @@ export class MessagesService {
     loggedInUser: UserEntity,
   ): Promise<ICreateMessageRoomOutput> {
     try {
+      if (userId === loggedInUser.id) throw new Error("it's me");
       const user = await this.prismaService.user.findUnique({
         where: {
           id: userId,
@@ -73,8 +74,15 @@ export class MessagesService {
       const existRoom = await this.prismaService.messageRoom.findFirst({
         where: {
           users: {
-            some: {
-              AND: [{ id: user.id }, { id: loggedInUser.id }],
+            every: {
+              OR: [
+                {
+                  id: user.id,
+                },
+                {
+                  id: loggedInUser.id,
+                },
+              ],
             },
           },
         },
