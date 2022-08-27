@@ -1,5 +1,9 @@
 # Instagram Clone Backend.
 
+- **Github Repository URL** <br/> https://github.com/GyuJae/instagramclone_backend
+- **Web Github Repository URL** <br/> https://github.com/GyuJae/instaclone-web-next 
+- **Native App Repository URL** <br/> https://github.com/GyuJae/instaclone-native
+
 ### User
 ___
 - [X] Create Account
@@ -43,4 +47,4 @@ ___
 - [X] See Rooms
 - [X] Read Message
 - [X] Computed Fields
-- [ ] Realtime Messages
+- [X] Realtime Messages
